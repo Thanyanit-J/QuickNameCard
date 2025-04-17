@@ -1,0 +1,66 @@
+<div class="card-wrapper">
+  @if(mode === 'edit') {
+    <div class="card-edit">
+      <p>
+        Name:&nbsp;
+        <input type="text" id="name" placeholder="Name" value="{{name}}" (input)="onInputChanges($event)">
+      </p>
+      <p>
+        Job Title:&nbsp;
+        <input type="text" id="job" placeholder="Job Title" value="{{job}}" (input)="onInputChanges($event)">
+      </p>
+      <p>
+        Company:&nbsp;
+        <input type="text" id="company" placeholder="Company" value="{{company}}" (input)="onInputChanges($event)">
+      </p>
+      <p>
+        Email:&nbsp;
+        <input type="text" id="email" placeholder="Email" value="{{email}}" (input)="onInputChanges($event)">
+      </p>
+      <p>
+        Phone:&nbsp;
+        <input type="text" id="phone" placeholder="Phone" value="{{phone}}" (input)="onInputChanges($event)">
+      </p>
+    </div>
+  }
+  @else if(mode === 'preview') {
+    <div class="card-view">
+      @if(isAllEmpty()) {
+        <div class="card-header">
+          <div>
+            <div class="name">{{ 'John Doe' }}</div>
+            <div class="job">{{ 'Software Engineer' }} • {{ 'Example Co., Ltd.' }} </div>
+          </div>
+        </div>
+        <div class="contact-info">
+          <p><strong>Email:</strong> {{ 'john.doe@example.com' }}</p>
+          <p><strong>Phone:</strong> {{ '+123-456-7890' }}</p>
+        </div>
+      }
+      @else {
+        <div class="card-header">
+          <div>
+            @if(name) {<div class="name">{{ name }}</div>}
+            <div class="job">@if(job) { {{ job }} } @if(job && company) {•} @if(company) { {{ company }} }</div>
+          </div>
+        </div>
+        <div class="contact-info">
+          @if(email) {<p><strong>Email:</strong> {{ email }}</p>}
+          @if(phone) {<p><strong>Phone:</strong> {{ phone }}</p>}
+        </div>
+      }
+    </div>
+  }
+
+  <div class="buttons">
+    <button (click)="toggleEdit()">
+      @if(mode === 'edit') {
+        Preview
+      }
+      @else {
+        Edit
+      }
+    </button>
+    <button (click)="copyUrl()">Copy URL</button>
+  </div>
+</div>
