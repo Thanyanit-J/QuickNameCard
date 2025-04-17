@@ -29,7 +29,6 @@ export class CardComponent implements OnInit {
 
   ngOnInit() {
     this.router.events.subscribe((event) => {
-      console.log(event);
       if (event instanceof NavigationEnd) {
         const params = this.route.snapshot.queryParams;
         this.name = params['name'] ?? this.name;
