@@ -13,7 +13,8 @@ import { Location } from '@angular/common';
   styleUrl: './card.component.css',
 })
 export class CardComponent implements OnInit {
-  name: string = '';
+  fname: string = '';
+  lname: string = '';
   job: string = '';
   company: string = '';
   email: string = '';
@@ -31,7 +32,8 @@ export class CardComponent implements OnInit {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const params = this.route.snapshot.queryParams;
-        this.name = params['name'] ?? this.name;
+        this.fname = params['fname'] ?? this.fname;
+        this.lname = params['lname'] ?? this.lname;
         this.job = params['job'] ?? this.job;
         this.company = params['company'] ?? this.company;
         this.email = params['email'] ?? this.email;
@@ -48,14 +50,16 @@ export class CardComponent implements OnInit {
 
   onInputChanges(event: Event): void {
     const url = new URL(window.location.href);
-    url.searchParams.set('name', (document.getElementById('name') as HTMLInputElement)?.value);
+    url.searchParams.set('fname', (document.getElementById('fname') as HTMLInputElement)?.value);
+    url.searchParams.set('lname', (document.getElementById('lname') as HTMLInputElement)?.value);
     url.searchParams.set('job', (document.getElementById('job') as HTMLInputElement)?.value);
     url.searchParams.set('company', (document.getElementById('company') as HTMLInputElement)?.value);
     url.searchParams.set('email', (document.getElementById('email') as HTMLInputElement)?.value);
     url.searchParams.set('phone', (document.getElementById('phone') as HTMLInputElement)?.value);
     this.location.replaceState(url.pathname + url.search);
 
-    this.name = (document.getElementById('name') as HTMLInputElement)?.value;
+    this.fname = (document.getElementById('fname') as HTMLInputElement)?.value;
+    this.lname = (document.getElementById('lname') as HTMLInputElement)?.value;
     this.job = (document.getElementById('job') as HTMLInputElement)?.value;
     this.company = (document.getElementById('company') as HTMLInputElement)?.value;
     this.email = (document.getElementById('email') as HTMLInputElement)?.value;
@@ -75,6 +79,6 @@ export class CardComponent implements OnInit {
   }
 
   protected isAllEmpty(): boolean {
-    return this.name === '' && this.job === '' && this.company === '' && this.email === '' && this.phone === '';
+    return this.fname === '' && this.lname === '' && this.job === '' && this.company === '' && this.email === '' && this.phone === '';
   }
 }

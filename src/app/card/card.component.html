@@ -2,9 +2,12 @@
   @if(mode === 'edit') {
     <div class="card-edit">
       <p>
-        Name:&nbsp;
-        <input type="text" id="name" placeholder="Name" value="{{name}}" (input)="onInputChanges($event)">
+        Firstname:&nbsp;
+        <input type="text" id="fname" placeholder="Firstname" value="{{fname}}" (input)="onInputChanges($event)">
       </p>
+      <p>
+        Lastname:&nbsp;
+        <input type="text" id="lname" placeholder="Lastname" value="{{lname}}" (input)="onInputChanges($event)">
       <p>
         Job Title:&nbsp;
         <input type="text" id="job" placeholder="Job Title" value="{{job}}" (input)="onInputChanges($event)">
@@ -40,8 +43,8 @@
       @else {
         <div class="card-header">
           <div>
-            @if(name) {<div class="name">{{ name }}</div>}
-            <div class="job">@if(job) { {{ job }} } @if(job && company) {•} @if(company) { {{ company }} }</div>
+            @if(fname || lname) {<div class="name">{{ fname }} @if(fname){ {{' '}} } {{ lname }}</div>}
+            @if(job || company) {<div class="job">@if(job) { {{ job }} } @if(job && company) {•} @if(company) { {{ company }} }</div>}
           </div>
         </div>
         <div class="contact-info">
