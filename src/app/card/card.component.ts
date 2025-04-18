@@ -31,22 +31,26 @@ export class CardComponent implements OnInit {
   ngOnInit() {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        const params = this.route.snapshot.queryParams;
-        const n = params['n']?.split(';') ?? [];
-        this.fname = n[1] ?? this.fname;
-        this.lname = n[0] ?? this.lname;
-        this.job = params['job'] ?? this.job;
-        this.company = params['org'] ?? this.company;
-        this.email = params['eml'] ?? this.email;
-        this.phone = params['tel'] ?? this.phone;
-
-        if (this.isAllEmpty()) {
-          this.mode = 'edit';
-        } else {
-          this.mode = 'preview';
-        }
+        this.loadFromQueryParams();
       }
     });
+  }
+
+  private loadFromQueryParams(): void {
+    const params = this.route.snapshot.queryParams;
+    const n = params['n']?.split(';') ?? [];
+    this.fname = n[1] ?? '';
+    this.lname = n[0] ?? '';
+    this.job = params['job'] ?? '';
+    this.company = params['org'] ?? '';
+    this.email = params['eml'] ?? '';
+    this.phone = params['tel'] ?? '';
+
+    if (this.isAllEmpty()) {
+      this.mode = 'edit';
+    } else {
+      this.mode = 'preview';
+    }
   }
 
   onInputChanges(event: Event): void {
