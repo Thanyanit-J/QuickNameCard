@@ -81,4 +81,38 @@ export class CardComponent implements OnInit {
   protected isAllEmpty(): boolean {
     return this.fname === '' && this.lname === '' && this.job === '' && this.company === '' && this.email === '' && this.phone === '';
   }
+
+  protected downloadVCARD() {
+    this.toFile(this.createVCARD(), 'contact.vcf');
+  }
+
+  private createVCARD(): string{
+    const vcard: string = 'BEGIN:VCARD\n' +
+      'VERSION:3.0\n';
+      const n = [this.lname || '', this.fname || '', '', '', ''].join(';')
+      const fn = [this.fname || '', this.lname || ''].join(' ').trim();
+      const org = this.company || ''
+      const title = this.job || ''
+      const email = this.email || ''
+      const tel = this.phone || ''
+      const vCard = vcard +
+      'N:' + n + '\n' +
+      'FN:' + fn + '\n' +
+      'ORG:' + org + '\n' +
+      'TITLE:' + title + '\n' +
+      'EMAIL:' + email + '\n' +
+      'TEL:' + tel + '\n' +
+      'END:VCARD';
+    return vCard;
+  }
+
+  private toFile(vCard: string, filename: string = 'contact.vcf') {
+    const blob = new Blob([vCard], { type: 'text/vcard' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
 }
