@@ -50,26 +50,44 @@ export class CardComponent implements OnInit {
   }
 
   onInputChanges(event: Event): void {
+    // Get values from input fields
+    const fnameInput = document.getElementById('fname') as HTMLInputElement;
+    const lnameInput = document.getElementById('lname') as HTMLInputElement;
+    const jobInput = document.getElementById('job') as HTMLInputElement;
+    const companyInput = document.getElementById('company') as HTMLInputElement;
+    const emailInput = document.getElementById('email') as HTMLInputElement;
+    const phoneInput = document.getElementById('phone') as HTMLInputElement;
+    
+    // Update component properties
+    this.fname = fnameInput?.value || '';
+    this.lname = lnameInput?.value || '';
+    this.job = jobInput?.value || '';
+    this.company = companyInput?.value || '';
+    this.email = emailInput?.value || '';
+    this.phone = phoneInput?.value || '';
+    
+    // Update URL params with only non-empty values
     const url = new URL(window.location.href);
-    url.searchParams.set(
-      'n',
-      (document.getElementById('lname') as HTMLInputElement)?.value +
-        ';' +
-        (document.getElementById('fname') as HTMLInputElement)?.value +
-        ';;;'
-    );
-    url.searchParams.set('job', (document.getElementById('job') as HTMLInputElement)?.value);
-    url.searchParams.set('org', (document.getElementById('company') as HTMLInputElement)?.value);
-    url.searchParams.set('eml', (document.getElementById('email') as HTMLInputElement)?.value);
-    url.searchParams.set('tel', (document.getElementById('phone') as HTMLInputElement)?.value);
+    
+    if (this.lname || this.fname) {
+      url.searchParams.set('n', `${this.lname || ''};${this.fname || ''};;;`);
+    } else {
+      url.searchParams.delete('n');
+    }
+    
+    if (this.job) url.searchParams.set('job', this.job);
+    else url.searchParams.delete('job');
+    
+    if (this.company) url.searchParams.set('org', this.company);
+    else url.searchParams.delete('org');
+    
+    if (this.email) url.searchParams.set('eml', this.email);
+    else url.searchParams.delete('eml');
+    
+    if (this.phone) url.searchParams.set('tel', this.phone);
+    else url.searchParams.delete('tel');
+    
     this.location.replaceState(url.pathname + url.search);
-
-    this.fname = (document.getElementById('fname') as HTMLInputElement)?.value;
-    this.lname = (document.getElementById('lname') as HTMLInputElement)?.value;
-    this.job = (document.getElementById('job') as HTMLInputElement)?.value;
-    this.company = (document.getElementById('company') as HTMLInputElement)?.value;
-    this.email = (document.getElementById('email') as HTMLInputElement)?.value;
-    this.phone = (document.getElementById('phone') as HTMLInputElement)?.value;
   }
 
   copyUrl() {
