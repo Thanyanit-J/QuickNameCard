@@ -32,12 +32,13 @@ export class CardComponent implements OnInit {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const params = this.route.snapshot.queryParams;
-        this.fname = params['fname'] ?? this.fname;
-        this.lname = params['lname'] ?? this.lname;
+        const n = params['n']?.split(';') ?? [];
+        this.fname = n[1] ?? this.fname;
+        this.lname = n[0] ?? this.lname;
         this.job = params['job'] ?? this.job;
-        this.company = params['company'] ?? this.company;
-        this.email = params['email'] ?? this.email;
-        this.phone = params['phone'] ?? this.phone;
+        this.company = params['org'] ?? this.company;
+        this.email = params['eml'] ?? this.email;
+        this.phone = params['tel'] ?? this.phone;
 
         if (this.isAllEmpty()) {
           this.mode = 'edit';
@@ -50,12 +51,17 @@ export class CardComponent implements OnInit {
 
   onInputChanges(event: Event): void {
     const url = new URL(window.location.href);
-    url.searchParams.set('fname', (document.getElementById('fname') as HTMLInputElement)?.value);
-    url.searchParams.set('lname', (document.getElementById('lname') as HTMLInputElement)?.value);
+    url.searchParams.set(
+      'n',
+      (document.getElementById('lname') as HTMLInputElement)?.value +
+        ';' +
+        (document.getElementById('fname') as HTMLInputElement)?.value +
+        ';;;'
+    );
     url.searchParams.set('job', (document.getElementById('job') as HTMLInputElement)?.value);
-    url.searchParams.set('company', (document.getElementById('company') as HTMLInputElement)?.value);
-    url.searchParams.set('email', (document.getElementById('email') as HTMLInputElement)?.value);
-    url.searchParams.set('phone', (document.getElementById('phone') as HTMLInputElement)?.value);
+    url.searchParams.set('org', (document.getElementById('company') as HTMLInputElement)?.value);
+    url.searchParams.set('eml', (document.getElementById('email') as HTMLInputElement)?.value);
+    url.searchParams.set('tel', (document.getElementById('phone') as HTMLInputElement)?.value);
     this.location.replaceState(url.pathname + url.search);
 
     this.fname = (document.getElementById('fname') as HTMLInputElement)?.value;
@@ -79,40 +85,59 @@ export class CardComponent implements OnInit {
   }
 
   protected isAllEmpty(): boolean {
-    return this.fname === '' && this.lname === '' && this.job === '' && this.company === '' && this.email === '' && this.phone === '';
+    return (
+      this.fname === '' &&
+      this.lname === '' &&
+      this.job === '' &&
+      this.company === '' &&
+      this.email === '' &&
+      this.phone === ''
+    );
   }
 
   protected downloadVCARD() {
     this.toFile(this.createVCARD(), 'contact.vcf');
   }
 
-  private createVCARD(): string{
-    const vcard: string = 'BEGIN:VCARD\n' +
-      'VERSION:3.0\n';
-      const n = [this.lname || '', this.fname || '', '', '', ''].join(';')
-      const fn = [this.fname || '', this.lname || ''].join(' ').trim();
-      const org = this.company || ''
-      const title = this.job || ''
-      const email = this.email || ''
-      const tel = this.phone || ''
-      const vCard = vcard +
-      'N:' + n + '\n' +
-      'FN:' + fn + '\n' +
-      'ORG:' + org + '\n' +
-      'TITLE:' + title + '\n' +
-      'EMAIL:' + email + '\n' +
-      'TEL:' + tel + '\n' +
+  private createVCARD(): string {
+    const vcard: string = 'BEGIN:VCARD\n' + 'VERSION:3.0\n';
+    const n = [this.lname || '', this.fname || '', '', '', ''].join(';');
+    const fn = [this.fname || '', this.lname || ''].join(' ').trim();
+    const org = this.company || '';
+    const title = this.job || '';
+    const email = this.email || '';
+    const tel = this.phone || '';
+    const vCard =
+      vcard +
+      'N:' +
+      n +
+      '\n' +
+      'FN:' +
+      fn +
+      '\n' +
+      'ORG:' +
+      org +
+      '\n' +
+      'TITLE:' +
+      title +
+      '\n' +
+      'EMAIL:' +
+      email +
+      '\n' +
+      'TEL:' +
+      tel +
+      '\n' +
       'END:VCARD';
     return vCard;
   }
 
   private toFile(vCard: string, filename: string = 'contact.vcf') {
-    const blob = new Blob([vCard], { type: 'text/vcard' })
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = filename
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    const blob = new Blob([vCard], { type: 'text/vcard' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 }
